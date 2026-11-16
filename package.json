@@ -1,0 +1,77 @@
+{
+	"name": "@ritmo-v0/markdown",
+	"version": "1.0.0",
+	"description": "Ritmo's preferred Markdown.",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ritmo-v0/markdown.git"
+	},
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./server": {
+			"types": "./dist/server.d.ts",
+			"default": "./dist/server.js"
+		},
+		"./plugins": {
+			"types": "./dist/plugins/index.d.ts",
+			"default": "./dist/plugins/index.js"
+		}
+	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"engines": {
+		"node": ">=20.3"
+	},
+	"scripts": {
+		"build": "node -e \"fs.rmSync('dist', { recursive: true, force: true })\" && tsc",
+		"prepack": "npm run build",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"hast-util-from-html-isomorphic": "^2.0.0",
+		"hast-util-to-text": "^4.0.3",
+		"katex": "^0.19.1",
+		"mdast-util-to-string": "^4.0.0",
+		"probe-image-size": "^7.5.0",
+		"react-markdown": "^10.1.0",
+		"rehype-raw": "^7.0.0",
+		"rehype-slug": "^6.0.0",
+		"remark-breaks": "^4.0.0",
+		"remark-cjk-friendly": "^2.3.4",
+		"remark-cjk-friendly-gfm-strikethrough": "^2.3.3",
+		"remark-directive": "^4.0.0",
+		"remark-gfm": "^4.0.1",
+		"remark-math": "^6.0.0",
+		"server-only": "^0.0.1",
+		"unist-util-visit": "^5.2.0",
+		"unist-util-visit-parents": "^6.1.0"
+	},
+	"peerDependencies": {
+		"@types/react": "^19.0.0",
+		"react": "^19.0.0"
+	},
+	"peerDependenciesMeta": {
+		"@types/react": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@types/hast": "^3.0.5",
+		"@types/mdast": "^4.0.4",
+		"@types/node": "^26.6.6",
+		"@types/probe-image-size": "^7.2.5",
+		"@types/react": "^19.3.0",
+		"mdast-util-directive": "^3.2.0",
+		"typescript": "^7.0.2",
+		"unified": "^11.0.5"
+	},
+	"packageManager": "pnpm@12.21.0"
+}
