@@ -14,7 +14,7 @@ The package imports KaTeX CSS (`katex-swap.min.css`) itself, so the app doesn't 
 
 | Path | Exports | Environment |
 | --- | --- | --- |
-| `@ritmo-v0/markdown` | `Markdown`, `MarkdownProps` | client / server |
+| `@ritmo-v0/markdown` | `Markdown`, `MarkdownProps`, types `Components` / `ExtraProps` / `Options` (from react-markdown) | client / server |
 | `@ritmo-v0/markdown/server` | `MarkdownAsync` | Server Components only (`server-only`) |
 | `@ritmo-v0/markdown/plugins` | all plugins | `rehypeImageSize` depends on `node:fs`, so don't use this entry in the client |
 

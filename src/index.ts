@@ -5,6 +5,7 @@ import { withPlugins } from "./shared.js";
 // Types & Interfaces
 import type { ReactElement } from "react";
 import type { MarkdownProps } from "./shared.js";
+export type { Components, ExtraProps, Options } from "react-markdown";
 export type { MarkdownProps };
 
 
