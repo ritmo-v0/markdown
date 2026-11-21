@@ -1,3 +1,5 @@
+import { omitNodes } from "./components.js";
+
 // Remark
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
@@ -21,6 +23,7 @@ import type { Options } from "react-markdown";
 import type { PluggableList } from "unified";
 export type MarkdownProps = Options & {
 	afterRaw?: Options["rehypePlugins"];
+	omitNode?: boolean;
 	renderH1?: boolean;
 };
 
@@ -41,15 +44,18 @@ const REHYPE_PLUGINS: PluggableList = [rehypeRaw, rehypeSlug, rehypeKatex];
 
 
 export function withPlugins({
+	components,
+	disallowedElements,
 	remarkPlugins,
 	rehypePlugins,
 	afterRaw,
+	omitNode = true,
 	renderH1 = true,
-	disallowedElements,
 	...props
 }: MarkdownProps): Options {
 	return {
 		...props,
+		components: omitNode && components ? omitNodes(components) : components,
 		remarkPlugins: remarkPlugins?.length
 			? [...REMARK_PLUGINS, ...remarkPlugins]
 			: REMARK_PLUGINS,

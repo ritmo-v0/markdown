@@ -14,7 +14,7 @@ The package imports KaTeX CSS (`katex-swap.min.css`) itself, so the app doesn't 
 
 | Path | Exports | Environment |
 | --- | --- | --- |
-| `@ritmo-v0/markdown` | `Markdown`, `MarkdownProps`, types `Components` / `ExtraProps` / `Options` (from react-markdown) | client / server |
+| `@ritmo-v0/markdown` | `Markdown`, `omitNode`, types `MarkdownProps` / `Components` / `ExtraProps` / `Options` (from react-markdown) | client / server |
 | `@ritmo-v0/markdown/server` | `MarkdownAsync` | Server Components only (`server-only`) |
 | `@ritmo-v0/markdown/plugins` | all plugins | `rehypeImageSize` depends on `node:fs`, so don't use this entry in the client |
 
@@ -28,6 +28,28 @@ import { MarkdownAsync } from "@ritmo-v0/markdown/server";
 
 `MarkdownAsync` additionally runs `rehypeImageSize`, which writes `width` / `height` to `<img>`.
 
+### Default components
+
+Wrap `Markdown` / `MarkdownAsync` in your own component, merging per-call `components` over your defaults:
+
+```tsx
+// components/markdown.tsx
+import {
+  Markdown as BaseMarkdown,
+  type MarkdownProps,
+} from "@ritmo-v0/markdown";
+
+export function Markdown({ components, ...props }: MarkdownProps) {
+  return (
+    <BaseMarkdown components={{ ...COMPONENTS, ...components }} {...props} />
+  );
+}
+```
+
+Define `COMPONENTS` at module level (inline arrow functions there are fine), so each component keeps the same reference across renders.
+
+By default (`omitNode`), components don't receive react-markdown's `node` prop, so spreading props onto a DOM element is safe. Wrappers are cached per component, so the same component always gets the same wrapper and never remounts on re-render. Set `omitNode={false}` to get `node`; `omitNode(Component)` does the same for a single component.
+
 ## Props
 
 All react-markdown `Options`, plus:
@@ -35,6 +57,7 @@ All react-markdown `Options`, plus:
 | Prop | Default | Description |
 | --- | --- | --- |
 | `afterRaw` | — | Rehype plugins inserted right after `rehype-raw` (before slug / katex) |
+| `omitNode` | `true` | When `true`, `components` don't receive react-markdown's `node` prop |
 | `renderH1` | `true` | When `false`, adds `h1` to `disallowedElements` |
 
 `remarkPlugins` / `rehypePlugins` passed in are appended after the built-in plugins.

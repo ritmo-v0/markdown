@@ -8,6 +8,8 @@ import type { MarkdownProps } from "./shared.js";
 export type { Components, ExtraProps, Options } from "react-markdown";
 export type { MarkdownProps };
 
+export { omitNode } from "./components.js";
+
 
 
 export function Markdown(props: MarkdownProps): ReactElement {
