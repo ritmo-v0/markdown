@@ -33,7 +33,7 @@ export const REMARK_SYNTAX_PLUGINS: PluggableList = [
 	[remarkGfm, { singleTilde: false }],
 	[remarkMath, { singleDollarTextMath: false }],
 	remarkCjk,
-	remarkCjkGfmStrikethrough,
+	[remarkCjkGfmStrikethrough, { singleTilde: false }],
 	remarkDirective,
 ];
 const REMARK_PLUGINS: PluggableList = [
