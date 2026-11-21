@@ -59,6 +59,7 @@ All react-markdown `Options`, plus:
 | `afterRaw` | — | Rehype plugins inserted right after `rehype-raw` (before slug / katex) |
 | `omitNode` | `true` | When `true`, `components` don't receive react-markdown's `node` prop |
 | `renderH1` | `true` | When `false`, adds `h1` to `disallowedElements` |
+| `slug` | `true` | When `false`, skips `rehype-slug`, so headings get no `id` |
 
 `remarkPlugins` / `rehypePlugins` passed in are appended after the built-in plugins.
 

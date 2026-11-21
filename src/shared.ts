@@ -25,6 +25,7 @@ export type MarkdownProps = Options & {
 	afterRaw?: Options["rehypePlugins"];
 	omitNode?: boolean;
 	renderH1?: boolean;
+	slug?: boolean;
 };
 
 // Constants & Variables
@@ -39,7 +40,8 @@ const REMARK_PLUGINS: PluggableList = [
 	remarkLeafDirective,
 	remarkContainerDirective,
 ];
-const REHYPE_PLUGINS: PluggableList = [rehypeRaw, rehypeSlug, rehypeKatex];
+const REHYPE_PLUGINS: PluggableList = [rehypeSlug, rehypeKatex];
+const REHYPE_PLUGINS_WITHOUT_SLUG = REHYPE_PLUGINS.filter(plugin => plugin !== rehypeSlug);
 
 
 
@@ -51,6 +53,7 @@ export function withPlugins({
 	afterRaw,
 	omitNode = true,
 	renderH1 = true,
+	slug = true,
 	...props
 }: MarkdownProps): Options {
 	return {
@@ -59,15 +62,12 @@ export function withPlugins({
 		remarkPlugins: remarkPlugins?.length
 			? [...REMARK_PLUGINS, ...remarkPlugins]
 			: REMARK_PLUGINS,
-		rehypePlugins: afterRaw?.length || rehypePlugins?.length
-			? [
-				rehypeRaw,
-				...(afterRaw ?? []),
-				rehypeSlug,
-				rehypeKatex,
-				...(rehypePlugins ?? []),
-			]
-			: REHYPE_PLUGINS,
+		rehypePlugins: [
+			rehypeRaw,
+			...(afterRaw ?? []),
+			...(slug ? REHYPE_PLUGINS : REHYPE_PLUGINS_WITHOUT_SLUG),
+			...(rehypePlugins ?? []),
+		],
 		disallowedElements: renderH1
 			? disallowedElements
 			: [...(disallowedElements ?? []), "h1"],
