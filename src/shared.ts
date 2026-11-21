@@ -29,13 +29,16 @@ export type MarkdownProps = Options & {
 };
 
 // Constants & Variables
-const REMARK_PLUGINS: PluggableList = [
-	remarkBreaks,
+export const REMARK_SYNTAX_PLUGINS: PluggableList = [
 	[remarkGfm, { singleTilde: false }],
 	[remarkMath, { singleDollarTextMath: false }],
 	remarkCjk,
 	remarkCjkGfmStrikethrough,
 	remarkDirective,
+];
+const REMARK_PLUGINS: PluggableList = [
+	remarkBreaks,
+	...REMARK_SYNTAX_PLUGINS,
 	remarkTextDirective,
 	remarkLeafDirective,
 	remarkContainerDirective,

@@ -16,6 +16,7 @@ The package imports KaTeX CSS (`katex-swap.min.css`) itself, so the app doesn't 
 | --- | --- | --- |
 | `@ritmo-v0/markdown` | `Markdown`, `omitNode`, types `MarkdownProps` / `Components` / `ExtraProps` / `Options` (from react-markdown) | client / server |
 | `@ritmo-v0/markdown/server` | `MarkdownAsync` | Server Components only (`server-only`) |
+| `@ritmo-v0/markdown/stream` | `MarkdownStream`, type `MarkdownStreamProps` | Client Components only (`"use client"`) |
 | `@ritmo-v0/markdown/plugins` | all plugins | `rehypeImageSize` depends on `node:fs`, so don't use this entry in the client |
 
 ```tsx
@@ -28,9 +29,21 @@ import { MarkdownAsync } from "@ritmo-v0/markdown/server";
 
 `MarkdownAsync` additionally runs `rehypeImageSize`, which writes `width` / `height` to `<img>`.
 
+### Streaming
+
+`MarkdownStream` renders each top-level block as its own memoized `Markdown`, so only the last (still growing) block renders again. Heading slugs are always off.
+
+```tsx
+import { MarkdownStream } from "@ritmo-v0/markdown/stream";
+
+<MarkdownStream streaming={isStreaming}>{text}</MarkdownStream>
+```
+
+While `streaming` (default `true`), the last block goes through [Remend](https://github.com/vercel/streamdown/tree/main/packages/remend): half-typed inline syntax is completed (`**bold` → `**bold**`, a half-typed link shows as its text), and anything that would render at a different height until it's finished is hidden instead: a last line of only markers (`#`, `-`, `1.`, `|---`, `$`…), an unclosed `$$` formula, a half-typed image or HTML tag. Set `streaming={false}` once the text is final, or a message that really ends that way stays hidden.
+
 ### Default components
 
-Wrap `Markdown` / `MarkdownAsync` in your own component, merging per-call `components` over your defaults:
+Wrap `Markdown` / `MarkdownAsync` / `MarkdownStream` in your own component, merging per-call `components` over your defaults:
 
 ```tsx
 // components/markdown.tsx
@@ -41,12 +54,15 @@ import {
 
 export function Markdown({ components, ...props }: MarkdownProps) {
   return (
-    <BaseMarkdown components={{ ...COMPONENTS, ...components }} {...props} />
+    <BaseMarkdown
+      components={components ? { ...COMPONENTS, ...components } : COMPONENTS}
+      {...props}
+    />
   );
 }
 ```
 
-Define `COMPONENTS` at module level (inline arrow functions there are fine), so each component keeps the same reference across renders.
+Define `COMPONENTS` at module level (inline arrow functions there are fine) and pass `COMPONENTS` itself when there's nothing to merge. A new object on every render is harmless for `Markdown` / `MarkdownAsync`, but makes `MarkdownStream` render every block again.
 
 By default (`omitNode`), components don't receive react-markdown's `node` prop, so spreading props onto a DOM element is safe. Wrappers are cached per component, so the same component always gets the same wrapper and never remounts on re-render. Set `omitNode={false}` to get `node`; `omitNode(Component)` does the same for a single component.
 
